@@ -5,7 +5,7 @@ package com.terralogic.alexle.tictactoe.model;
  */
 
 public class Board {
-    private Cell[][] cells;
+    private Cell[][] cells = new Cell[3][3];
     private GameState state;
     private Player currentTurn;
     private Player winner;
@@ -54,11 +54,9 @@ public class Board {
     private boolean isValid(int row, int col) {
         if (isOutOfBounds(row, col)) {
             return false;
-        }
-        if (isCellChecked(row, col)) {
+        } else if (isCellChecked(row, col)) {
             return false;
-        }
-        if (state == GameState.FINISHED) {
+        } else if (state == GameState.FINISHED) {
             return false;
         }
         return true;
@@ -69,21 +67,21 @@ public class Board {
     }
 
     private boolean isCellChecked(int row, int col) {
-        return cells[row][col] != null;
+        return cells[row][col].getValue() != null;
     }
 
     private boolean isWinningMoveByPlayer(Player player, int currentRow, int currentCol) {
-        if (cells[currentRow][0].getValue() == player || cells[currentRow][1].getValue() == player
-                || cells[currentRow][2].getValue() == player) {//Horizontal check
+        if (cells[currentRow][0].getValue() == player && cells[currentRow][1].getValue() == player
+                && cells[currentRow][2].getValue() == player) {//Horizontal check
             return true;
-        } else if (cells[0][currentCol].getValue() == player || cells[1][currentCol].getValue() == player
-                || cells[2][currentCol].getValue() == player) {//Vertical check
+        } else if (cells[0][currentCol].getValue() == player && cells[1][currentCol].getValue() == player
+                && cells[2][currentCol].getValue() == player) {//Vertical check
             return true;
-        } else if (cells[0][0].getValue() == player || cells[1][1].getValue() == player
-                || cells[2][2].getValue() == player) {
+        } else if (cells[0][0].getValue() == player && cells[1][1].getValue() == player
+                && cells[2][2].getValue() == player) {
             return true;
-        } else if (cells[0][2].getValue() == player || cells[1][1].getValue() == player
-                || cells[2][0].getValue() == player) {
+        } else if (cells[0][2].getValue() == player && cells[1][1].getValue() == player
+                && cells[2][0].getValue() == player) {
             return true;
         }
         return false;
