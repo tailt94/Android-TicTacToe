@@ -1,4 +1,4 @@
-package com.terralogic.alexle.tictactoe.controller;
+package com.terralogic.alexle.tictactoe.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,15 +12,17 @@ import android.widget.TextView;
 import com.terralogic.alexle.tictactoe.R;
 import com.terralogic.alexle.tictactoe.model.Board;
 import com.terralogic.alexle.tictactoe.model.Player;
+import com.terralogic.alexle.tictactoe.presenter.TicTacToePresenter;
 
-public class TicTacToeActivity extends AppCompatActivity {
+public class TicTacToeActivity extends AppCompatActivity implements TicTacToeView {
     private static final String TAG = TicTacToeActivity.class.getName();
 
     private GridLayout gridButtons;
     private ViewGroup winnerViewGroup;
     private TextView winnerLabel;
     private Button buttonReset;
-    Board board;
+
+    TicTacToePresenter presenter = new TicTacToePresenter(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,25 @@ public class TicTacToeActivity extends AppCompatActivity {
         setContentView(R.layout.tictactoe);
         bindViews();
 
-        board = new Board();
+        presenter.onCreate();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 
     public void onCellClicked(View view) {
@@ -40,26 +60,18 @@ public class TicTacToeActivity extends AppCompatActivity {
 
         Log.i(TAG, "Check: row " + row + " - col " + col);
 
-        Player movedPlayer = board.mark(row, col);
-
-        if (movedPlayer != null) {
-            button.setText(movedPlayer.toString());
-            if (board.getWinner() != null) {
-                winnerLabel.setText(movedPlayer.toString());
-                winnerViewGroup.setVisibility(View.VISIBLE);
-            }
-        }
+        presenter.onButtonSelected(row, col);
     }
 
     public void onButtonResetClicked(View view) {
-        winnerViewGroup.setVisibility(View.INVISIBLE);
+        /*winnerViewGroup.setVisibility(View.INVISIBLE);
         winnerLabel.setText("");
 
         board.restart();
 
         for (int i = 0; i < gridButtons.getChildCount(); i++) {
             ((Button) gridButtons.getChildAt(i)).setText("");
-        }
+        }*/
     }
 
     private void bindViews() {
@@ -69,4 +81,30 @@ public class TicTacToeActivity extends AppCompatActivity {
         buttonReset = (Button) findViewById(R.id.btn_reset);
     }
 
+    @Override
+    public void showWinner(String winningPlayerDisplayLabel) {
+        winnerLabel.setText(winningPlayerDisplayLabel);
+        winnerViewGroup.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void clearWinnerDisplay() {
+        winnerViewGroup.setVisibility(View.INVISIBLE);
+        winnerLabel.setText("");
+    }
+
+    @Override
+    public void clearButtons() {
+        for (int i = 0; i < gridButtons.getChildCount(); i++) {
+            ((Button) gridButtons.getChildAt(i)).setText("");
+        }
+    }
+
+    @Override
+    public void setButtonLabel(int row, int col, String text) {
+        Button btn = (Button) gridButtons.findViewWithTag("" + row + col);
+        if (btn != null) {
+            btn.setText(text);
+        }
+    }
 }
