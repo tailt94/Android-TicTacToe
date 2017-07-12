@@ -64,14 +64,7 @@ public class TicTacToeActivity extends AppCompatActivity implements TicTacToeVie
     }
 
     public void onButtonResetClicked(View view) {
-        /*winnerViewGroup.setVisibility(View.INVISIBLE);
-        winnerLabel.setText("");
-
-        board.restart();
-
-        for (int i = 0; i < gridButtons.getChildCount(); i++) {
-            ((Button) gridButtons.getChildAt(i)).setText("");
-        }*/
+        presenter.onResetSelected();
     }
 
     private void bindViews() {
